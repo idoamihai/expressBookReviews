@@ -31,10 +31,14 @@ public_users.post("/register", (req,res) => {
     }
 });
 
-function getBooks() {
-    return new Promise((resolve, reject) => {
-        resolve(books);
-    });
+// function getBooks() {
+//     return new Promise((resolve, reject) => {
+//         resolve(books);
+//     });
+// }
+
+async function getBooks() {
+    return books
 }
 
 // Get the book list available in the shop
