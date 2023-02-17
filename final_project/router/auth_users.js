@@ -5,15 +5,16 @@ const regd_users = express.Router();
 
 let users = [];
 
-function isValid(username) {
-    const userMatches = users.filter((user) => user.username === username);
-    return userMatches.length > 0;
-}
-
-function authenticatedUser(username, password) {
-    const matchingUsers = users.filter((user) => user.username === username && user.password === password);
-    return matchingUsers.length > 0;
-}
+const authenticatedUser = (username,password)=>{
+    let validusers = users.filter((user)=>{
+      return (user.username === username && user.password === password)
+    });
+    if(validusers.length > 0){
+      return true;
+    } else {
+      return false;
+    }
+  }
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
@@ -38,7 +39,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     if (books[isbn]) {
         let book = books[isbn];
         book.reviews[username] = review;
-        return res.status(200).send("Review successfully posted");
+        return res.status(200).send(book);
     }
     else {
         return res.status(404).json({message: `ISBN ${isbn} not found`});
@@ -51,7 +52,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     if (books[isbn]) {
         let book = books[isbn];
         delete book.reviews[username];
-        return res.status(200).send("Review successfully deleted");
+        return res.status(200).send(JSON.stringify(book)+" Review successfully deleted");
     }
     else {
         return res.status(404).json({message: `ISBN ${isbn} not found`});
@@ -59,5 +60,4 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
 });
 
 module.exports.authenticated = regd_users;
-module.exports.isValid = isValid;
 module.exports.users = users;
